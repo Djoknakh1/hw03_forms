@@ -125,7 +125,7 @@ USE_TZ = True
 
 LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "posts:index"
-LOGOUT_REDIRECT_URL = "posts:index"
+# LOGOUT_REDIRECT_URL = "users:logout"
 STATIC_URL = "/static/"
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"

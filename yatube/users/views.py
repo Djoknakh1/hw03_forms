@@ -4,6 +4,7 @@ from django.http import HttpResponse
 # Create your views here.
 from django.views.generic import CreateView
 
+
 # Функция reverse_lazy позволяет получить URL по параметрам функции path()
 # Берём, тоже пригодится
 from django.urls import reverse_lazy
@@ -33,4 +34,5 @@ def password_reset_form(request):
 
 
 def logged_out(request):
+    logout(request)
     return render(request, "users/logged_out.html")

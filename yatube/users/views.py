@@ -31,8 +31,3 @@ def password_reset_form(request):
         return HttpResponse("Invalid header found.")
 
     return render(request, "users/password_reset_form.html")
-
-
-def logged_out(request):
-    logout(request)
-    return render(request, "users/logged_out.html")

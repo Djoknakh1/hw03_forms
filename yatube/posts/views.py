@@ -9,15 +9,16 @@ from .models import Post, Group, User
 PER_PAGE = 10
 
 
-def index(request):
+def paginate(request):
     post_list = Post.objects.all()
     paginator = Paginator(post_list, PER_PAGE)
-
-    # Из URL извлекаем номер запрошенной страницы - это значение параметра page
     page_number = request.GET.get("page")
-
-    # Получаем набор записей для страницы с запрошенным номером
     page_obj = paginator.get_page(page_number)
+    return page_obj
+
+
+def index(request):
+    page_obj = paginate(request)
     # Отдаем в словаре контекста
     context = {
         "page_obj": page_obj,
@@ -27,12 +28,9 @@ def index(request):
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    post_list = Post.objects.all()
-    paginator = Paginator(post_list, PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    page_obj = paginate(request)
 
-    posts = Post.objects.filter(group=group).order_by("-pub_date")[:PER_PAGE]
+    posts = group.posts.all()[:PER_PAGE]
     context = {
         "group": group,
         "posts": posts,
@@ -60,15 +58,13 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     # Здесь код запроса к модели и создание словаря контекста
+    post_alone = get_object_or_404(Post, pk=post_id)
     posts = Post.objects.filter(pk=post_id)
-    # добавил full_post
-    full_post = get_object_or_404(Post, id=post_id)
-    author = posts[0].author
-    count = Post.objects.filter(author=author).count()
+    count = Post.objects.filter(author=post_alone.author).count()
     context = {
-        "posts": posts,
+        "post_alone": post_alone,
         "count": count,
-        "full_post": full_post,
+        "posts": posts,
     }
     return render(request, "posts/post_detail.html", context)
 
